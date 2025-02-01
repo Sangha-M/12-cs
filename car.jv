@@ -1,0 +1,117 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class LoginGUI extends JFrame {
+
+    private JTextField txtUsername;
+    private JPasswordField txtPassword;
+    private JButton btnLogin;
+    private JButton btnCreate;
+    private JLabel lblWelcome;
+    private JLabel lblNoAccount;
+
+    public LoginGUI() {
+        // Set up the frame
+        setTitle("Welcome!");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 250);
+        setLocationRelativeTo(null);  // Center the window on the screen
+        setLayout(new GridBagLayout());
+
+        // Initialize components
+        lblWelcome = new JLabel("Welcome!");
+        lblWelcome.setFont(new Font("SansSerif", Font.BOLD, 24));
+
+        txtUsername = new JTextField(15);
+        txtPassword = new JPasswordField(15);
+
+        btnLogin = new JButton("Log in");
+        lblNoAccount = new JLabel("Don't have an account?");
+        btnCreate = new JButton("Create");
+
+        // Create a GridBagConstraints object for layout
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // add some padding around components
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Row 0: Welcome label (centered across two columns)
+        gbc.gridx = 0; // column 0
+        gbc.gridy = 0; // row 0
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(lblWelcome, gbc);
+
+        // Row 1: Username field
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(txtUsername, gbc);
+
+        // Row 2: Password field
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(txtPassword, gbc);
+
+        // Row 3: Login button
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        add(btnLogin, gbc);
+
+        // Row 4: "Don't have an account?"
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(lblNoAccount, gbc);
+
+        // Row 5: Create button
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        add(btnCreate, gbc);
+
+        // Add button action listeners
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retrieve and show username/password (demo only)
+                String username = txtUsername.getText();
+                char[] password = txtPassword.getPassword();
+                JOptionPane.showMessageDialog(
+                    LoginGUI.this, 
+                    "Username: " + username + "\nPassword: " + String.valueOf(password),
+                    "Login Info",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                // Here you’d handle authentication logic
+                // e.g., check user credentials from a database
+            }
+        });
+
+        btnCreate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle account creation logic here
+                JOptionPane.showMessageDialog(
+                    LoginGUI.this, 
+                    "Create account button clicked.", 
+                    "Account Creation",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new LoginGUI().setVisible(true);
+        });
+    }
+}
