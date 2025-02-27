@@ -1,0 +1,323 @@
+package com.mycompany.carserviceapp;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CarServiceApp {
+
+    private static JFrame loginFrame;
+    private static JFrame serviceFrame;
+    private static JFrame timeFrame;
+    private static JFrame createAccountFrame;
+    private static Map<String, String> userDatabase = new HashMap<>();
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        showLoginScreen();
+    }
+
+    public static void showLoginScreen() {
+        loginFrame = new JFrame("Welcome to Car Service!");
+        loginFrame.setSize(400, 600);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.setBackground(new Color(173, 216, 230));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(173, 216, 230));
+
+        JLabel welcomeLabel = new JLabel("Welcome to Car Service");
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 26));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        welcomeLabel.setForeground(new Color(0, 51, 102));
+        panel.add(welcomeLabel);
+
+        panel.add(Box.createVerticalStrut(20));
+
+        JTextField usernameField = new JTextField();
+        usernameField.setPreferredSize(new Dimension(250, 30));
+        usernameField.setMaximumSize(new Dimension(250, 30));
+        usernameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        usernameField.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 1));
+        panel.add(usernameField);
+
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setPreferredSize(new Dimension(250, 30));
+        passwordField.setMaximumSize(new Dimension(250, 30));
+        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passwordField.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 1));
+        panel.add(passwordField);
+
+        JCheckBox showPasswordCheckBox = new JCheckBox("Show Password");
+        showPasswordCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showPasswordCheckBox.setBackground(new Color(173, 216, 230));
+        showPasswordCheckBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        showPasswordCheckBox.setForeground(new Color(0, 51, 102));
+        showPasswordCheckBox.addActionListener(e -> {
+            if (showPasswordCheckBox.isSelected()) {
+                passwordField.setEchoChar((char) 0);
+            } else {
+                passwordField.setEchoChar('*');
+            }
+        });
+        panel.add(showPasswordCheckBox);
+
+        panel.add(Box.createVerticalStrut(20));
+
+        JButton loginButton = new JButton("Log in");
+        loginButton.setBackground(new Color(0, 51, 102));
+        loginButton.setForeground(Color.BLACK);
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (userDatabase.containsKey(username) && userDatabase.get(username).equals(password)) {
+                loginFrame.dispose();
+                showServiceScreen();
+            } else {
+                JPanel messagePanel = new JPanel();
+                messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+                JLabel errorMessage = new JLabel("Invalid credentials. Don't have an account?");
+                errorMessage.setAlignmentX(Component.CENTER_ALIGNMENT);
+                messagePanel.add(errorMessage);
+
+                JButton createAccountButton = new JButton("Create Account");
+                createAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                createAccountButton.setFont(new Font("Arial", Font.BOLD, 16));
+                createAccountButton.addActionListener(e1 -> {
+                    showCreateAccountScreen();
+                    loginFrame.dispose();
+                });
+                messagePanel.add(createAccountButton);
+
+                JOptionPane.showMessageDialog(loginFrame, messagePanel, "Login Failed", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        panel.add(loginButton);
+
+        JLabel createLabel = new JLabel("Don't have an account?");
+        createLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        createLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        createLabel.setForeground(new Color(0, 51, 102));
+        panel.add(createLabel);
+
+        JButton createButton = new JButton("Create");
+        createButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        createButton.setBackground(new Color(0, 153, 51));
+        createButton.setForeground(Color.BLACK);
+        createButton.setFont(new Font("Arial", Font.BOLD, 16));
+        createButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(loginFrame, "Please fill in both fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (userDatabase.containsKey(username)) {
+                JOptionPane.showMessageDialog(loginFrame, "Username already exists.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                userDatabase.put(username, password);
+                JOptionPane.showMessageDialog(loginFrame, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        panel.add(createButton);
+
+        loginFrame.add(panel);
+        loginFrame.setVisible(true);
+    }
+
+    public static void showCreateAccountScreen() {
+        createAccountFrame = new JFrame("Create Account");
+        createAccountFrame.setSize(400, 600);
+        createAccountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        createAccountFrame.setLocationRelativeTo(null);
+        createAccountFrame.setBackground(new Color(173, 216, 230));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(173, 216, 230));
+
+        JLabel firstNameLabel = new JLabel("First Name:");
+        firstNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(firstNameLabel);
+
+        JTextField firstNameField = new JTextField();
+        firstNameField.setPreferredSize(new Dimension(250, 30));
+        firstNameField.setMaximumSize(new Dimension(250, 30));
+        firstNameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(firstNameField);
+
+        JLabel surnameLabel = new JLabel("Surname:");
+        surnameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(surnameLabel);
+
+        JTextField surnameField = new JTextField();
+        surnameField.setPreferredSize(new Dimension(250, 30));
+        surnameField.setMaximumSize(new Dimension(250, 30));
+        surnameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(surnameField);
+
+        JLabel emailLabel = new JLabel("Email:");
+        emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(emailLabel);
+
+        JTextField emailField = new JTextField();
+        emailField.setPreferredSize(new Dimension(250, 30));
+        emailField.setMaximumSize(new Dimension(250, 30));
+        emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(emailField);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(usernameLabel);
+
+        JTextField usernameField = new JTextField();
+        usernameField.setPreferredSize(new Dimension(250, 30));
+        usernameField.setMaximumSize(new Dimension(250, 30));
+        usernameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(usernameField);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(passwordLabel);
+
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setPreferredSize(new Dimension(250, 30));
+        passwordField.setMaximumSize(new Dimension(250, 30));
+        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(passwordField);
+
+        JLabel ccLabel = new JLabel("Credit Card Number:");
+        ccLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(ccLabel);
+
+        JTextField ccField = new JTextField();
+        ccField.setPreferredSize(new Dimension(250, 30));
+        ccField.setMaximumSize(new Dimension(250, 30));
+        ccField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(ccField);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        submitButton.setFont(new Font("Arial", Font.BOLD, 16));
+        submitButton.addActionListener(e -> {
+            String firstName = firstNameField.getText();
+            String surname = surnameField.getText();
+            String email = emailField.getText();
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            String creditCard = ccField.getText();
+
+            if (firstName.isEmpty() || surname.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || creditCard.isEmpty()) {
+                JOptionPane.showMessageDialog(createAccountFrame, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (userDatabase.containsKey(username)) {
+                JOptionPane.showMessageDialog(createAccountFrame, "Username already exists.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                userDatabase.put(username, password);
+                JOptionPane.showMessageDialog(createAccountFrame, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                createAccountFrame.dispose();
+                showLoginScreen();
+            }
+        });
+        panel.add(submitButton);
+
+        createAccountFrame.add(panel);
+        createAccountFrame.setVisible(true);
+    }
+
+    public static void showServiceScreen() {
+        serviceFrame = new JFrame("How Can We Help?");
+        serviceFrame.setSize(400, 600);
+        serviceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        serviceFrame.setLocationRelativeTo(null);
+        serviceFrame.setBackground(new Color(100, 149, 237));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(100, 149, 237));
+
+        JButton roadsideServiceButton = new JButton("Quick Roadside Service?");
+        roadsideServiceButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        roadsideServiceButton.setBackground(new Color(0, 51, 102));
+        roadsideServiceButton.setForeground(Color.BLACK);
+        roadsideServiceButton.setFont(new Font("Arial", Font.BOLD, 16));
+        roadsideServiceButton.addActionListener(e -> showTimeSelection("Roadside Service"));
+        panel.add(roadsideServiceButton);
+
+        panel.add(Box.createVerticalStrut(20));
+
+        JButton carDetailButton = new JButton("Quick Car Detail?");
+        carDetailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        carDetailButton.setBackground(new Color(0, 51, 102));
+        carDetailButton.setForeground(Color.BLACK);
+        carDetailButton.setFont(new Font("Arial", Font.BOLD, 16));
+        carDetailButton.addActionListener(e -> showTimeSelection("Car Detail"));
+        panel.add(carDetailButton);
+
+        serviceFrame.add(panel);
+        serviceFrame.setVisible(true);
+    }
+
+    public static void showTimeSelection(String serviceType) {
+        serviceFrame.dispose();
+
+        timeFrame = new JFrame("Select Time and Date");
+        timeFrame.setSize(400, 600);
+        timeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        timeFrame.setLocationRelativeTo(null);
+        timeFrame.setBackground(new Color(25, 25, 112));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(25, 25, 112));
+
+        JLabel serviceLabel = new JLabel("Service: " + serviceType);
+        serviceLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        serviceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        serviceLabel.setForeground(Color.WHITE);
+        panel.add(serviceLabel);
+
+        String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        String[] times = {"9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"};
+
+        JComboBox<String> dayDropdown = new JComboBox<>(days);
+        JComboBox<String> monthDropdown = new JComboBox<>(months);
+        JComboBox<String> timeDropdown = new JComboBox<>(times);
+
+        panel.add(new JLabel("Select Day:"));
+        panel.add(dayDropdown);
+        panel.add(new JLabel("Select Month:"));
+        panel.add(monthDropdown);
+        panel.add(new JLabel("Select Time:"));
+        panel.add(timeDropdown);
+
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        confirmButton.setBackground(new Color(0, 153, 51));
+        confirmButton.setForeground(Color.BLACK);
+        confirmButton.setFont(new Font("Arial", Font.BOLD, 16));
+        confirmButton.addActionListener(e -> {
+            String day = (String) dayDropdown.getSelectedItem();
+            String month = (String) monthDropdown.getSelectedItem();
+            String time = (String) timeDropdown.getSelectedItem();
+
+            JOptionPane.showMessageDialog(timeFrame, "Service Scheduled: " + day + " " + month + " at " + time, "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+            timeFrame.dispose();
+        });
+        panel.add(confirmButton);
+
+        timeFrame.add(panel);
+        timeFrame.setVisible(true);
+    }
+}
